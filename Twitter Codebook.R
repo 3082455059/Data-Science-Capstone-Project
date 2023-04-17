@@ -39,10 +39,10 @@ attach(tweets)
 
 
 par(mfrow = c(2, 2))
-boxplot(engagement ~ data_concern_relevant, data = subset(tweets, created_at_x == '1'), main = 'Pre Leak', ylim = c(0, 180))
-boxplot(engagement ~ data_concern_relevant, data = subset(tweets, created_at_x == '2'), main = 'Between  Leak and Overturn', ylim = c(0, 180))
-boxplot(engagement ~ data_concern_relevant, data = subset(tweets, created_at_x == '3'), main = 'Overturn', ylim = c(0, 180))
-boxplot(engagement ~ data_concern_relevant, data = subset(tweets, created_at_x == '4'), main = 'Post Overturn', ylim = c(0, 180))
+boxplot(engagement ~ data_concern_relevant, data = subset(tweets, created_at_x == '1'), main = 'Pre Leak', ylim = c(0, 180), names = c('No concern', 'Privacy concern'))
+boxplot(engagement ~ data_concern_relevant, data = subset(tweets, created_at_x == '2'), main = 'Between  Leak and Overturn', ylim = c(0, 180), names = c('No concern', 'Privacy concern'))
+boxplot(engagement ~ data_concern_relevant, data = subset(tweets, created_at_x == '3'), main = 'Overturn', ylim = c(0, 180), names = c('No concern', 'Privacy concern'))
+boxplot(engagement ~ data_concern_relevant, data = subset(tweets, created_at_x == '4'), main = 'Post Overturn', ylim = c(0, 180), names = c('No concern', 'Privacy concern'))
 
 # cor(retweet_count, reply_count)        # 0.9405534
 # cor(retweet_count, like_count)         # 0.8006877
@@ -117,7 +117,7 @@ result_adjr2$which[15,] # TRUE TRUE TRUE TRUE
 
 fit2 <- lm(log(engagement) ~ as.factor(created_at_x) * as.factor(data_concern_relevant) + as.factor(verified) + tweet_length)
 summary(fit2)
-plot(fit2)
+plot(fit2, col = alpha('black', 0.5), cex = 0.1)
 
 # library(tidyverse)
 # cooksD <- cooks.distance(fit1.transform)
@@ -131,12 +131,13 @@ plot(fit2)
 # summary(fit2.transform)
 # plot(fit2.transform)
 
-color.pat <- ifelse(data_concern_relevant == '1', 'red', 'blue')
+color.pat <- ifelse(data_concern_relevant == '1', 'indianred1', 'blue')
 plot(created_at, log(engagement), col = alpha(color.pat, 0.1))
 privacy <- smooth.spline(created_at[data_concern_relevant == '1'], log(engagement[data_concern_relevant == '1']))
-lines(privacy$x, privacy$y, lty = 3, col = 'red', lwd = 4)
+legend('topleft', legend=c("Privacy concern", "No concern"), col=c("red3", "blue3"), lty=1, cex=0.8, box.lty=0, lwd = 4)
 non.privacy <- smooth.spline(created_at[data_concern_relevant == '0'], log(engagement[data_concern_relevant == '0']))
-lines(non.privacy$x, non.privacy$y, lty = 3, col = 'blue', lwd = 4)
+lines(non.privacy$x, non.privacy$y, lty = 1, col = 'blue3', lwd = 4)
+lines(privacy$x, privacy$y, lty = 1, col = 'red3', lwd = 4)
 abline(v = as.POSIXct("2022-05-01"),lty = 3, col = 'orange', lwd = 2)
 abline(v = as.POSIXct("2022-06-23"), lty = 3, col = 'orange', lwd = 2)
 abline(v = as.POSIXct("2022-07-23"), lty = 3, col = 'orange', lwd = 2)
